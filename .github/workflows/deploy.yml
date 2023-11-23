@@ -9,6 +9,7 @@ on:
       - 'modules/**'
       - 'infra/**'
       - 'justfile'
+      - 'go.mod'
    
 jobs:
   Pre-check:
