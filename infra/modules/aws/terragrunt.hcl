@@ -1,6 +1,6 @@
 locals {
     namespace = "fomiller"
-    project_name = "{name}"
+    project_name = "congocoon"
 }
 generate provider {
   path      = "provider.gen.tf"

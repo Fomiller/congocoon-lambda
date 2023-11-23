@@ -23,37 +23,27 @@ jobs:
           cancel_others: 'true'
           concurrent_skipping: 'same_content_newer'
             
-  # Build-lambdas:
-  #   name: 'Build Go lambda'
-  #   needs: Pre-check
-  #   uses: fomiller/gh-actions/.github/workflows/go-lambda.yaml@main
-  #   with:
-  #     lambda_src: src/cmd/lambda/{name}/main.go
-  #     lambda_output:  infra/modules/aws/lambda/bin/lambda_{name}
-  #     artifacts_dir: infra/modules/aws/lambda/bin
+  Build-lambdas:
+    name: 'Build Go lambda'
+    needs: Pre-check
+    uses: fomiller/gh-actions/.github/workflows/go-lambda.yaml@main
+    with:
+      lambda_src: infra/modules/aws/lambda/src/main.go
+      lambda_output:  infra/modules/aws/lambda/bin/lambda_congocoon
+      artifacts_dir: infra/modules/aws/lambda/src/bin
         
   Deploy-infra:
     name: 'Deploy Infra'
-    needs: [Pre-check]
+    needs: [Build-Lambdas]
     uses: fomiller/gh-actions/.github/workflows/terragrunt.yaml@main
     with:
       environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
       infra-dir: infra/modules/aws
-      doppler-project: {name}
+      doppler-project: congocoon-lambda
       download-artifacts: true
-      artifacts_dir: infra/modules/aws/lambda/bin
+      artifacts_dir: infra/modules/aws/lambda/src/bin
     secrets: inherit
         
-  Build-deploy-ecr-images:
-    name: 'Build/Deploy ECR images'
-    needs: Deploy-infra
-    uses: fomiller/gh-actions/.github/workflows/ecr.yaml@main
-    with:
-      environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
-      repo: api
-      repo-prefix: "fomiller-{name}"
-    secrets: inherit
-     
     # use if you need to debug workflow
     # - name: DEBUG
     #   uses: lhotari/action-upterm@v1
