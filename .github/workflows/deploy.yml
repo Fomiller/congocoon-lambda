@@ -30,7 +30,7 @@ jobs:
     uses: fomiller/gh-actions/.github/workflows/go-lambda.yaml@main
     with:
       lambda_src: infra/modules/aws/lambda/src/main.go
-      lambda_output:  infra/modules/aws/lambda/bin/lambda_congocoon
+      lambda_output:  infra/modules/aws/lambda/src/bin/lambda_congocoon
       artifacts_dir: infra/modules/aws/lambda/src/bin
         
   Deploy-infra:
