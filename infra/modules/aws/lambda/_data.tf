@@ -11,3 +11,4 @@ data "aws_kms_key" "chat_stat_master_kms_key" {
 data "aws_secretsmanager_secret" "gmail_api_key" {
   name = "${var.namespace}-gmail-api-key"
 }
+
