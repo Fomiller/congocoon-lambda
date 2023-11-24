@@ -4,8 +4,8 @@ data "archive_file" "zip" {
   output_path = "${path.module}/lambda_function.zip"
 }
 
-data "aws_kms_key" "chat_stat_master_kms_key" {
-  key_id = "alias/${var.namespace}-chat-stat-master"
+data "aws_kms_key" "fomiller_master" {
+  key_id = "alias/${var.namespace}-master"
 }
 
 data "aws_secretsmanager_secret" "gmail_api_key" {
