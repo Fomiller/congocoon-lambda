@@ -190,9 +190,9 @@ func sendEmail() {
 	port := "587"
 
 	subject := "MainCoon Kittens Available"
-	body := `<p>Kittens are Available</p>
+	body := fmt.Sprintf(`<p>Kittens are Available</p>
 
-  <a href="http://www.congocoon.com/kittensforsale.html">click here</a>`
+  <a href=%s>click here</a>`, os.Getenv("URL"))
 
 	request := Mail{
 		Sender:  from,
