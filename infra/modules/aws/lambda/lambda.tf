@@ -10,7 +10,9 @@ resource "aws_lambda_function" "lambda" {
   timeout          = 10
 
   environment {
-    URL = var.congocoon_url
+    variables = {
+      URL = var.congocoon_url
+    }
   }
 }
 
