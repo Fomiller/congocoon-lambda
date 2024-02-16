@@ -3,3 +3,6 @@ variable "gmail_api_key" {
   default = "abc1234"
 }
 
+variable "congocoon_url" {
+  type = string
+}

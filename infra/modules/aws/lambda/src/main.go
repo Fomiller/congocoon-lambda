@@ -44,7 +44,7 @@ func HandleRequest(ctx context.Context, event Event) {
 	log.Printf("EVENT: %s", event)
 
 	s3_session := s3.New(session.New())
-	remoteHash, err := getHTMLHash("http://congocoon.com/kittensforsale.html")
+	remoteHash, err := getHTMLHash(os.Getenv("URL"))
 	if err != nil {
 		panic(err)
 	}

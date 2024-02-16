@@ -8,6 +8,10 @@ resource "aws_lambda_function" "lambda" {
   architectures    = ["arm64"]
   memory_size      = 128
   timeout          = 10
+
+  environment {
+    URL = var.congocoon_url
+  }
 }
 
 resource "aws_lambda_permission" "lambda_permission" {
