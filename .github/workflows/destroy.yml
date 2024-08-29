@@ -5,12 +5,8 @@ name: 'Terragrunt Deploy'
 on:
   push:
     branches:
-      - main
-      - test
-      - develop
-      - feature/**
-      - '!destroy'
-      - '!destroy/**'
+      - 'destroy'
+      - 'destroy/**'
     paths:
       - '.github/**'
       - 'modules/**'
@@ -39,17 +35,18 @@ jobs:
       lambda_src: infra/modules/aws/lambda/src/main.go
       lambda_output:  infra/modules/aws/lambda/src/bin/congocoon/bootstrap
       artifacts_dir: infra/modules/aws/lambda/src/bin
-        
-  Deploy-infra:
-    name: 'Deploy Infra'
+            
+  Destroy-infra:
+    name: 'Destroy Infra'
     needs: [Build-Lambdas]
     uses: fomiller/gh-actions/.github/workflows/terragrunt.yaml@main
     with:
       environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
       infra-dir: infra/modules/aws
+      artifacts_dir: infra/modules/aws/lambda/src/bin
       doppler-project: congocoon-lambda
       download-artifacts: true
-      artifacts_dir: infra/modules/aws/lambda/src/bin
+      tg-destroy: true
     secrets: inherit
         
     # use if you need to debug workflow
