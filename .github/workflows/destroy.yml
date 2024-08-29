@@ -27,9 +27,8 @@ jobs:
           cancel_others: 'true'
           concurrent_skipping: 'same_content_newer'
             
-  Deploy-infra:
-    name: 'Deploy Infra'
-    needs: [Build-Lambdas]
+  Destroy-infra:
+    name: 'Destroy Infra'
     uses: fomiller/gh-actions/.github/workflows/terragrunt.yaml@main
     with:
       environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
