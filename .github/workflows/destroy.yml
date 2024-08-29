@@ -27,12 +27,22 @@ jobs:
           cancel_others: 'true'
           concurrent_skipping: 'same_content_newer'
             
+  Build-lambdas:
+    name: 'Build Go lambda'
+    needs: Pre-check
+    uses: fomiller/gh-actions/.github/workflows/go-lambda.yaml@main
+    with:
+      lambda_src: infra/modules/aws/lambda/src/main.go
+      lambda_output:  infra/modules/aws/lambda/src/bin/congocoon/bootstrap
+      artifacts_dir: infra/modules/aws/lambda/src/bin
+            
   Destroy-infra:
     name: 'Destroy Infra'
     uses: fomiller/gh-actions/.github/workflows/terragrunt.yaml@main
     with:
       environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
       infra-dir: infra/modules/aws
+      artifacts_dir: infra/modules/aws/lambda/src/bin
       doppler-project: congocoon-lambda
       download-artifacts: true
       tg-destroy: true
