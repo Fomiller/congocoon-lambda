@@ -5,12 +5,8 @@ name: 'Terragrunt Deploy'
 on:
   push:
     branches:
-      - main
-      - test
-      - develop
-      - feature/**
-      - '!destroy'
-      - '!destroy/**'
+      - 'destroy'
+      - 'destroy/**'
     paths:
       - '.github/**'
       - 'modules/**'
@@ -31,15 +27,6 @@ jobs:
           cancel_others: 'true'
           concurrent_skipping: 'same_content_newer'
             
-  Build-lambdas:
-    name: 'Build Go lambda'
-    needs: Pre-check
-    uses: fomiller/gh-actions/.github/workflows/go-lambda.yaml@main
-    with:
-      lambda_src: infra/modules/aws/lambda/src/main.go
-      lambda_output:  infra/modules/aws/lambda/src/bin/congocoon/bootstrap
-      artifacts_dir: infra/modules/aws/lambda/src/bin
-        
   Deploy-infra:
     name: 'Deploy Infra'
     needs: [Build-Lambdas]
@@ -49,7 +36,7 @@ jobs:
       infra-dir: infra/modules/aws
       doppler-project: congocoon-lambda
       download-artifacts: true
-      artifacts_dir: infra/modules/aws/lambda/src/bin
+      tg-destroy: true
     secrets: inherit
         
     # use if you need to debug workflow
