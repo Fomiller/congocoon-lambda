@@ -2,13 +2,10 @@
 
 name: 'Terragrunt Deploy'
   
+# Manual only. This repo isn't deployed anymore, so a push must not apply
+# terraform. Nothing is left in AWS to apply against (FOM-132).
 on:
-  push:
-    paths:
-      - '.github/**'
-      - 'modules/**'
-      - 'infra/**'
-      - 'justfile'
+  workflow_dispatch:
    
 jobs:
   Pre-check:
@@ -35,6 +32,9 @@ jobs:
   Deploy-infra:
     name: 'Deploy Infra'
     needs: [Pre-check]
+    permissions:
+      id-token: write
+      contents: read
     uses: fomiller/gh-actions/.github/workflows/terragrunt.yaml@main
     with:
       environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
@@ -42,16 +42,22 @@ jobs:
       doppler-project: {name}
       download-artifacts: true
       artifacts_dir: infra/modules/aws/lambda/bin
+      use-oidc: true
     secrets: inherit
         
   Build-deploy-ecr-images:
     name: 'Build/Deploy ECR images'
     needs: Deploy-infra
+    permissions:
+      id-token: write
+      contents: read
+      pull-requests: read
     uses: fomiller/gh-actions/.github/workflows/ecr.yaml@main
     with:
       environment: ${{ contains(fromJSON('["refs/heads/main", "refs/heads/master"]'), github.ref) && 'prod' || 'dev' }}
       repo: api
       repo-prefix: "fomiller-{name}"
+      use-oidc: true
     secrets: inherit
      
     # use if you need to debug workflow
